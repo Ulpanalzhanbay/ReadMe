@@ -21,7 +21,7 @@ This hotel reservation system consists of the following classes:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/Ulpanalzhanbay/hotel-reservation-system.git
+   git clone https://github.com/Ulpanalzhanbay/ReadMe/blob/main/hotel-reservation-system
    ```
 2. Navigate to the project directory:
    ```bash
