@@ -44,7 +44,3 @@ Follow the prompts to perform the following actions:
 2. Make a Reservation
 3. Cancel Reservation
 4. Exit
-
-## Contributing
-
-Contributions are welcome! Please follow the guidelines in [CONTRIBUTING.md](CONTRIBUTING.md) to contribute to this project.
