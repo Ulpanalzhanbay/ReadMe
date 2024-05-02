@@ -6,7 +6,6 @@ This Python program implements a simple hotel reservation system. It allows user
 - [Overview](#overview)
 - [Installation](#installation)
 - [Usage](#usage)
-- [Contributing](#contributing)
 
 ## Overview
 
