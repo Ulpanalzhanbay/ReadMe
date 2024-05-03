@@ -1,45 +1,62 @@
-# Hotel Reservation System
+## Hotel Reservation System
 
-This Python program implements a simple hotel reservation system. It allows users to view room information, make reservations, cancel reservations, and exit the system.
+This is a simple hotel reservation system implemented in Python. It allows users to view room information, make reservations, and cancel reservations.
 
-## Table of Contents
-- [Overview](#overview)
-- [Installation](#installation)
-- [Usage](#usage)
+### Classes
 
-## Overview
+#### Accommodation (Abstract Base Class)
 
-This hotel reservation system consists of the following classes:
+- Base class representing accommodation entities.
+- Attributes:
+  - `room_number`: Room number.
+  - `capacity`: Maximum capacity of the room.
+  - `price_per_night`: Price per night for the room.
+  - `is_reserved`: Boolean indicating if the room is reserved.
+  - `reservation`: Reservation associated with the room.
+- Methods:
+  - `reserve(reservation)`: Abstract method to reserve the accommodation.
+  - `cancel_reservation()`: Abstract method to cancel the reservation.
 
-- **Room**: Represents a hotel room with attributes such as room number, capacity, price per night, reservation status, and associated reservation details.
-- **Hotel**: Represents a hotel with a name and a list of rooms. It provides a method to find available rooms based on capacity and maximum price per night.
-- **Reservation**: Represents a reservation with details such as guest name, reserved room, check-in date, and check-out date.
-- **Main**: Contains the main function to run the hotel reservation system, which interacts with users through a command-line interface.
+#### Room
 
-## Installation
+- Represents a hotel room.
+- Inherits from Accommodation.
+- Methods:
+  - `reserve(reservation)`: Reserves the room with the provided reservation.
+  - `cancel_reservation()`: Cancels the reservation associated with the room.
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/Ulpanalzhanbay/ReadMe/blob/main/hotel-reservation-system
-   ```
-2. Navigate to the project directory:
-   ```bash
-   cd hotel-reservation-system
-   ```
-3. Install dependencies:
-   ```bash
-   pip install tabulate
-   ```
+#### Hotel
 
-## Usage
+- Represents a hotel.
+- Attributes:
+  - `name`: The name of the hotel.
+  - `rooms`: List of Room objects representing the rooms in the hotel.
+- Methods:
+  - `find_available_rooms(capacity, price_per_night)`: Finds available rooms based on capacity and maximum price per night.
 
-To run the hotel reservation system, execute the main Python script:
-```bash
-python main.py
-```
+#### Reservation
 
-Follow the prompts to perform the following actions:
-1. View Room Information
-2. Make a Reservation
-3. Cancel Reservation
-4. Exit
+- Represents a reservation.
+- Inherits from Accommodation.
+- Methods:
+  - `total_cost()`: Calculates the total cost of the reservation.
+
+### Functions
+
+- `print_accommodation_info(accommodation)`: Prints information about an accommodation, including reservation details if any.
+- `print_available_rooms(available_rooms)`: Prints information about available rooms.
+
+### Usage
+
+1. Run the script.
+2. Choose options from the menu:
+   - View Room Information
+   - Make a Reservation
+   - Cancel Reservation
+   - Exit
+
+### Dependencies
+
+- `datetime`: Used for date and time operations.
+- `tabulate`: Used for generating formatted tables.
+- `abc`: Used for defining abstract base classes and abstract methods.
