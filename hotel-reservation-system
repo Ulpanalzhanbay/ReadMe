@@ -1,125 +1,168 @@
     import datetime
     from tabulate import tabulate
-
-    class Room:    
-"""Class representing a hotel room.
-    Attributes:
-        room_number (str): The room number.
-        capacity (int): The capacity of the room.
-        price_per_night (float): The price per night for the room.
-        is_reserved (bool): Indicates whether the room is reserved or not.
-        reservation (Reservation or None): The reservation associated with the room."""
-
+    from abc import ABC, abstractmethod
+    
+    class Accommodation(ABC):
+        """Base class representing accommodation entities."""
+    
         def __init__(self, room_number, capacity, price_per_night):
-        
-"""Initialize a Room object with the given attributes."""
-
-            self.room_number = room_number
-            self.capacity = capacity
-            self.price_per_night = price_per_night
-            self.is_reserved = False
-            self.reservation = None
-
+            """Initialize an Accommodation object with the given attributes."""
+            self._room_number = room_number  # Encapsulation: Room number is now protected
+            self._capacity = capacity  # Encapsulation: Capacity is now protected
+            self._price_per_night = price_per_night  # Encapsulation: Price per night is now protected
+            self._is_reserved = False  # Encapsulation: is_reserved is now protected
+            self._reservation = None  # Encapsulation: Reservation is now protected
+    
+        @property
+        def room_number(self):
+            return self._room_number
+    
+        @property
+        def capacity(self):
+            return self._capacity
+    
+        @property
+        def price_per_night(self):
+            return self._price_per_night
+    
+        @property
+        def is_reserved(self):
+            return self._is_reserved
+    
+        @property
+        def reservation(self):
+            return self._reservation
+    
+        @abstractmethod
         def reserve(self, reservation):
-"""Reserve the room with the provided reservation.
-        Args:
-            reservation (Reservation): The reservation to be associated with the room.
-        Returns:
-            bool: True if the reservation was successful, False otherwise."""
-            
-                if not self.is_reserved:
-                    self.is_reserved = True
-                    self.reservation = reservation
-                    return True
-                else:
-                    return False
-
+            pass
+    
+        @abstractmethod
         def cancel_reservation(self):
-"""Cancel the reservation associated with the room.
-        Returns:
-            bool: True if the reservation was canceled successfully, False otherwise."""
-            
-            if self.is_reserved:
-                self.is_reserved = False
-                self.reservation = None
+            pass
+    
+    class Room(Accommodation):
+        """Class representing a hotel room."""
+    
+        def __init__(self, room_number, capacity, price_per_night):
+            """Initialize a Room object with the given attributes."""
+            super().__init__(room_number, capacity, price_per_night)
+    
+        def reserve(self, reservation):
+            """Reserve the room with the provided reservation.
+    
+            Args:
+                reservation (Reservation): The reservation to be associated with the room.
+    
+            Returns:
+                bool: True if the reservation was successful, False otherwise.
+            """
+            if not self._is_reserved:
+                self._is_reserved = True
+                self._reservation = reservation
                 return True
             else:
                 return False
-
+    
+        def cancel_reservation(self):
+            """Cancel the reservation associated with the room.
+    
+            Returns:
+                bool: True if the reservation was canceled successfully, False otherwise.
+            """
+            if self._is_reserved:
+                self._is_reserved = False
+                self._reservation = None
+                return True
+            else:
+                return False
+    
     class Hotel:
-"""Class representing a hotel.
-    Attributes:
-        name (str): The name of the hotel.
-        rooms (list): List of Room objects representing the rooms in the hotel."""
-
+        """Class representing a hotel.
+    
+        Attributes:
+            name (str): The name of the hotel.
+            rooms (list): List of Room objects representing the rooms in the hotel.
+        """
+    
         def __init__(self, name, rooms):
-"""Initialize a Hotel object with the given attributes."""
-        
+            """Initialize a Hotel object with the given attributes."""
             self.name = name
             self.rooms = rooms
-
+    
         def find_available_rooms(self, capacity, price_per_night):
-"""Find available rooms based on capacity and maximum price per night.
-        Args:
-            capacity (int): Required capacity for the room.
-            price_per_night (float): Maximum price per night for the room.
-        Returns:
-            list: List of available Room objects that meet the criteria."""
-            
+            """Find available rooms based on capacity and maximum price per night.
+    
+            Args:
+                capacity (int): Required capacity for the room.
+                price_per_night (float): Maximum price per night for the room.
+    
+            Returns:
+                list: List of available Room objects that meet the criteria.
+            """
             available_rooms = []
             for room in self.rooms:
                 if not room.is_reserved and room.capacity >= capacity and room.price_per_night <= price_per_night:
                     available_rooms.append(room)
             return available_rooms
-
-    class Reservation:
-"""Class representing a reservation.
-    Attributes:
-        guest_name (str): The name of the guest making the reservation.
-        room (Room): The room reserved.
-        check_in_date (datetime.date): The check-in date of the reservation.
-        check_out_date (datetime.date): The check-out date of the reservation."""
-
+    
+    class Reservation(Accommodation):
+        """Class representing a reservation."""
+    
         def __init__(self, guest_name, room, check_in_date, check_out_date):
-"""Initialize a Reservation object with the given attributes."""
-        
-            self.guest_name = guest_name
-            self.room = room
-            self.check_in_date = check_in_date
-            self.check_out_date = check_out_date
+            """Initialize a Reservation object with the given attributes."""
+            super().__init__(room.room_number, room.capacity, room.price_per_night)
+            self._guest_name = guest_name  # Encapsulation: Guest name is now protected
+            self._check_in_date = check_in_date  # Encapsulation: Check-in date is now protected
+            self._check_out_date = check_out_date  # Encapsulation: Check-out date is now protected
+    
+        @property
+        def guest_name(self):
+            return self._guest_name
+    
+        @property
+        def check_in_date(self):
+            return self._check_in_date
+    
+        @property
+        def check_out_date(self):
+            return self._check_out_date
     
         def total_cost(self):
-"""Calculate the total cost of the reservation.
-        Returns:
-            float: The total cost of the reservation."""
-            
-            nights = (self.check_out_date - self.check_in_date).days
-            return nights * self.room.price_per_night
+            """Calculate the total cost of the reservation.
     
-    def print_room_info(room):
-"""Print information about a room, including reservation details if any.
-    Args:
-        room (Room): The room to display information about."""
-        
+            Returns:
+                float: The total cost of the reservation.
+            """
+            nights = (self._check_out_date - self._check_in_date).days
+            return nights * self._price_per_night
+    
+    def print_accommodation_info(accommodation):
+        """Print information about an accommodation, including reservation details if any.
+    
+        Args:
+            accommodation (Accommodation): The accommodation to display information about.
+        """
         reservation_details = []
-        if room.is_reserved:
-            reservation = room.reservation
+        if accommodation.is_reserved:
+            reservation = accommodation.reservation
             reservation_details.append([reservation.guest_name, reservation.check_in_date, reservation.check_out_date])
-        room_data = [[room.room_number, room.capacity, f"${room.price_per_night}", "Yes" if room.is_reserved else "No"]]
-        print(tabulate(room_data, headers=["Room Number", "Capacity", "Price per Night", "Is Reserved"], tablefmt="pretty"))
+        accommodation_data = [[accommodation.room_number, accommodation.capacity, f"${accommodation.price_per_night}", "Yes" if accommodation.is_reserved else "No"]]
+        print(tabulate(accommodation_data, headers=["Room Number", "Capacity", "Price per Night", "Is Reserved"], tablefmt="pretty"))
         if reservation_details:
             print(tabulate(reservation_details, headers=["Guest Name", "Check-in Date", "Check-out Date"], tablefmt="pretty"))
     
     def print_available_rooms(available_rooms):
-"""Print information about available rooms.
-    Args:
-        available_rooms (list): List of Room objects representing available rooms."""
-        
+        """Print information about available rooms.
+    
+        Args:
+            available_rooms (list): List of Room objects representing available rooms.
+        """
         room_data = [[room.room_number, room.capacity, f"${room.price_per_night}"] for room in available_rooms]
         print(tabulate(room_data, headers=["Room Number", "Capacity", "Price per Night"], tablefmt="pretty"))
     
     def main():
-"""Main function to run the hotel reservation system."""
+        """Main function to run the hotel reservation system."""
         room1 = Room("101", 2, 100)
         room2 = Room("102", 3, 150)
         room3 = Room("103", 4, 200)
@@ -136,7 +179,7 @@
             if choice == "1":
                 for room in hotel.rooms:
                     print("\nRoom Information:")
-                    print_room_info(room)
+                    print_accommodation_info(room)
             elif choice == "2":
                 try:
                     capacity = int(input("Enter required capacity: "))
@@ -162,7 +205,7 @@
                         print("No available rooms matching the criteria.")
                 except (ValueError, IndexError):
                     print("Invalid input. Please try again.")
-
+    
             elif choice == "3":
                 try:
                     guest_name = input("Enter guest name: ")
@@ -182,6 +225,6 @@
     
             else:
                 print("Invalid choice. Please enter a number between 1 and 4.")
-
+    
     if __name__ == "__main__":
         main()
